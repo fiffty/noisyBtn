@@ -1,0 +1,24 @@
+pre {
+  font-size: 14px;
+  border-radius: 5px;
+  overflow: auto;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background: #f6f9fa;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+code {
+  background-color: #f6f9fa;
+  padding: 2px 4px;
+  border-radius: 5px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #373f47;
+}

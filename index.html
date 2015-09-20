@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create a jQuery Plugin</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+	<div class="container">
+		<section class="row">
+			<h1>Create a jQuery Plugin</h1>
+
+			<h2>Key Learning Points</h2>
+			<p>The goal of this module is to review the following topics:
+				<ol>
+					<li>Self-executing anonymous functions</li>
+					<li>Object oriented javascript</li>
+				</ol>
+			</p>
+		</section>
+
+		<section class="row">
+			<h2>Example</h2>
+			<p>We will creating a plugin called 'noisyBtn'. Try hovering over and clicking on the button below.</p>
+			<button class="btn btn-default noisyBtn">I'm a noisy button </button>
+		</section>
+
+		<section class="row">
+			<h2>Basics of jQuery methods</h2>
+			<p>Let's first understand how jQuery functions work. Whenever you use <code>$</code> to select DOM elements, it returns a jQuery obejct. That object will have access to all jQuery methods. Let's look at the code below.</p>
+			<pre>
+				<code>
+$('body').css('background','#ddd');
+				</code>
+			</pre>
+			<p><code>$('body')</code> returns a jQuery object which contains the method <code>.css()</code>. We have been using these built-in jQuery methods all along, such as <code>.addClass()</code>, <code>.click()</code>, etc. To write our own jQuery methods, we need to know how a jQuery object gets these methods. The object <code>$.fn</code> is what provides the link between a jQuery object and its methods.</p>
+			<pre>
+				<code>
+$.fn.greyBackground = function() {
+	$('body').css('background', '#ddd');
+};
+
+$().greyBackground();
+				</code>
+			</pre>
+		</section>
+
+		<section class="row">
+			<h2>Self-executing anonymous functions</h2>
+			<p>Your jQuery plugin will most likely be longer than a few lines of code. So we will encapsulate the plugin within a self-executing anonymous function. The reason behind this is to make the code more modular. By wrapping our code this way, we
+				<ul>
+					<li>Create a scope just for the plugin, so that the variables used within will not be in conflict with any code outside of it.</li>
+					<li>This is especially important for jQuery, as jQuery's <code>$</code> notation is commonly used among other javascript libraries.</li>
+				</ul>
+			</p>
+			<pre>
+				<code>
+(function($) {
+	$.fn.greyBackground = function() {
+		$('body').css('background', '#ddd');
+	};
+})(jQuery);
+
+$().greyBackground();
+				</code>
+			</pre>
+			<p>This can be a little confusing at first glance, so let's break it up. We understand that we can write anonymous functions the following way:</p>
+			<pre>
+				<code>
+function() { // do something }
+				</code>
+			</pre>
+			<p>This on its own is quite meaningless, as it doesn't get executed when it's read, and neither do we have access to it in any other parts of our code. So we often store anonymous functions in variables, such as:</p>
+			<pre>
+				<code>
+var myFunction = function() { // do something };
+
+myFunction();
+				</code>
+			</pre>
+			<p>However, there is a way to execute an anonymous function without storing it into a variable. First, you wrap the entire function in parentheses, <code>(function() { // do something })</code>, then execute it using bracket notations at the end <code>(function() { // do something })()</code>.</p>
+			<p>Now let's revisit our code from above. In</p>
+			<pre>
+				<code>
+function($) {
+	$.fn.alert = function(str) {
+		alert(str);
+	};
+}					
+				</code>
+			</pre>
+			<p>the <code>$</code> is a parameter being passed into the anonymous function. On its own, it is NOT the jQuery notation. However, once you wrap the entire anonymous function with a parentheses, then execute the function with the object <code>jQuery</code> as the corresponding parameter, you are making sure that all <code>$</code> notations within that function points to jQuery. The code below is pretty much the same from our code from above:</p>
+			<pre>
+				<code>
+(function(foo) {
+	foo.fn.greyBackground = function() {
+		foo('body').css('background', '#ddd');
+	}
+})(jQuery);
+				</code>
+			</pre>
+		</section>
+
+		<section class="row">
+			<h2>Adding features and options</h2>
+			<p>Let's now write some code that is a little bit more interesting.</p>
+			<pre>
+				<code>
+(function($) {
+
+	$.fn.noisyBtn = function() {
+		var self = $(this);
+		self.hover(function() {
+			self.append('ha');
+		});
+		self.click(function() {
+			alert(self.html());
+		});
+	}
+
+})(jQuery);
+				</code>
+			</pre>
+			<p>We are creating a jQuery method called <code>.noisyBtn</code> that makes the DOM element respond to hover and click events in a certain way. The line <code>var self = $(this)</code> captures the jQuery object for the DOM element so that we can use methods such as <code>.hover</code> and <code>.append</code> on it. We can test whether our plugin works by creating a HTML element with a class named 'noisyBtn' and executing the method on it like: <code>$('.noisyBtn').noisyBtn();</code></p>
+			<p>Now let's try adding some options for our plugin.</p>
+			<pre>
+				<code>
+(function($) {
+
+	$.fn.noisyBtn = function(customOptions) {
+		var options = {'text-transform': 'none'}
+		$.extend(options, customOptions);
+
+		var self = $(this);
+		self.css(options);
+
+		self.hover(function() {
+			self.append('ha');
+		});
+		self.click(function() {
+			alert(self.html());
+		})
+	}
+
+})(jQuery);				
+				</code>
+			</pre>
+			<p>First, we've added <code>customOptions</code> as a parameter for our jQuery method. Then we defined the default options with <code>var options = {'text-transform': 'none'}</code> and let it be overwritten if the <code>customOptions</code> parameter exists with <a href="https://api.jquery.com/jquery.extend/">$.extend</a>. We then apply the options with <code>self.css(options)</code>. Now we can create a noisyBtn in all caps by doing <code>$('.noisyBtn').noisyBtn({'text-align': 'uppercase'})</code>.</p>
+		</section>
+
+		<section class="row">
+			<h2>Object oriented javascript</h2>
+			<p>Rewriting our code in an OOP fashion provides us with many benefits. Namely, it lets us easily attach additional functions to our custom jQuery method. To review Object-oriented programming, visit <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript">here.</a></p>
+			<p>First, we will create a constructor function within our anonymous function.</p>
+			<pre>
+				<code>
+var NoisyBtn = function() {
+	this.init = function(elem, options) {
+		return this;
+	}
+}					
+				</code>
+			</pre>
+			<p>This way, our jQuery method will simply create a new instance of the object, and most of the features will be coded within the <code>.init</code> function inside the constructor.</p>
+			<pre>
+				<code>
+$.fn.noisyBtn = function(options) {
+	return (new NoisyBtn).init(this, options);
+}					
+				</code>
+			</pre>
+			<p>Notice how <code>$.fn.noisyBtn()</code> creates a new instance with <code>(new NoisyBtn)</code>, then executes the function <code>.init</code> on it right away, with the parameters <code>this</code> and <code>options</code>. This way the the constructor function has access to the DOM element that our jQuery method is being applied on and the options we are putting in. With this, we will beef up our <code>.init</code> function to do what it's supposed to.</p>
+			<pre>
+				<code>	
+var NoisyBtn = function() {
+	this.options = {
+		'text-transform': 'capitalize'
+	};
+
+	self.init = function(elem, options) {
+		$.extend(this.options, options);
+		elem.css(this.options);
+		elem.hover(function(){
+			elem.append('ha');
+		});
+		elem.click(function() {
+			alert(elem.html());
+		});
+		return this;
+	}
+}			
+				</code>
+			</pre>
+			<p>As our last step, let's add a function to our object. Perhaps our noisyBtn can be too annoying at times, and we want a way to make it shut up. Inside our constructor, we will write a method <code>.shutup</code>, so that when it's executed, all listeners will be dropped.</p>
+			<pre>
+				<code>
+var NoisyBtn = function() {
+	...
+	self.shutup = function() {
+		$('.noisyBtn').off();
+	}	
+}
+				</code>
+			</pre>
+			<p>Now when we initiate our jQuery plugin, we will store it in a variable like so: <code>var noisyBtn = $('.noisyBtn').noisyBtn();</code>, so that we can use our <code>.shutup</code> function to disable the noisyBtn: <code>noisyBtn.shutup();</code></p>
+		</section>
+
+	</div>
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="noisyBtn.js"></script>
+	<script type="text/javascript">
+		var noisyBtn = $('.noisyBtn').noisyBtn();
+	</script>
+</body>
+</html>
