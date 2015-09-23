@@ -1,5 +1,8 @@
 # Create a jQuery Plugin
 
+##Example
+[jsfiddle](https://jsfiddle.net/fiffty/k57vht4u/)
+
 ##Key Learning points
 The goal of this module is to review the following topics: 
 * Self-executing anonymous functions 
