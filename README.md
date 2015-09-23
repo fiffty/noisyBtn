@@ -150,12 +150,36 @@ var NoisyBtn = function() {
 }
 ```
 
-As our last step, let's add a function to our object. Perhaps our noisyBtn can be too annoying at times, and we want a way to make it shut up. Inside our constructor, we will write a method `.shutup`, so that when it's executed, all listeners will be dropped.
+As our last step, let's add a function to our object. Perhaps our noisyBtn can be too annoying at times, and we want a way to make it shut up. Inside our constructor, we will write a method `.shutup`, so that when it's executed, all listeners will be dropped. 
+First, we need a way to store the HTML element that we are running our jQuery method on. Currently we have access to it in our `.init` function passed in as a parameter called `elem`. To make this avaialbe outside the `.init` function, we will first stage the instance of the NoisyBtn object in a variable.
+```javascript
+var NoisyBtn = function() {
+	var self = this;
+	...
+}
+```
+
+This way we can reference it within other scope such as `.init` function. And with it, we will store the HTML element.
+```javascript
+var NoisyBtn = function() {
+	var self = this;
+	self.options = {
+		'text-transform': 'capitalize'
+	};
+
+	self.init = function(elem, options) {
+		self.elem = elem;
+		...
+	}	
+}
+```
+
+Finally, we can creat a function that takes the `self.elem` and do something with it.
 ```javascript
 var NoisyBtn = function() {
 	...
 	self.shutup = function() {
-		$('.noisyBtn').off();
+		self.elem.off();
 	}	
 }
 ```

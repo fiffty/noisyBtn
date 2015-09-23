@@ -9,6 +9,8 @@
 
 
 		self.init = function(elem, options) {
+			self.elem = elem;
+
 			$.extend(self.options, options);
 			elem.css(self.options);
 			elem.hover(function(){
@@ -22,7 +24,7 @@
 		}
 
 		self.shutup = function() {
-			$('.noisyBtn').off();
+			self.elem.off();
 		}
 	}
 

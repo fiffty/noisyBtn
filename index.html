@@ -177,7 +177,7 @@ var NoisyBtn = function() {
 		'text-transform': 'capitalize'
 	};
 
-	self.init = function(elem, options) {
+	this.init = function(elem, options) {
 		$.extend(this.options, options);
 		elem.css(this.options);
 		elem.hover(function(){
@@ -192,12 +192,38 @@ var NoisyBtn = function() {
 				</code>
 			</pre>
 			<p>As our last step, let's add a function to our object. Perhaps our noisyBtn can be too annoying at times, and we want a way to make it shut up. Inside our constructor, we will write a method <code>.shutup</code>, so that when it's executed, all listeners will be dropped.</p>
+			<p>First, we need a way to store the HTML element that we are running our jQuery method on. Currently we have access to it in our <code>.init</code> function passed in as a parameter called <code>elem</code>. To make this avaialbe outside the <code>.init</code> function, we will first stage the instance of the NoisyBtn object in a variable.</p>
+			<pre>
+				<code>
+var NoisyBtn = function() {
+	var self = this;
+	...
+}
+				</code>
+			</pre>
+			<p>This way we can reference it within other scope such as <code>.init</code> function. And with it, we will store the HTML element.</p>
+			<pre>
+				<code>
+var NoisyBtn = function() {
+	var self = this;
+	self.options = {
+		'text-transform': 'capitalize'
+	};
+
+	self.init = function(elem, options) {
+		self.elem = elem;
+		...
+	}	
+}
+				</code>
+			</pre>
+			<p>Finally, we can creat a function that takes the <code>self.elem</code> and do something with it.</p>
 			<pre>
 				<code>
 var NoisyBtn = function() {
 	...
 	self.shutup = function() {
-		$('.noisyBtn').off();
+		self.elem.off();
 	}	
 }
 				</code>
