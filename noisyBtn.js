@@ -22,10 +22,11 @@
 
 			return self;
 		}
+	}
 
-		self.shutup = function() {
-			self.elem.off();
-		}
+	NoisyBtn.prototype.shutup = function() {
+		this.elem.off();
+		console.log('Noisy Button is disabled now');
 	}
 
 	$.fn.noisyBtn = function(options) {

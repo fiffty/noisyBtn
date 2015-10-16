@@ -201,34 +201,27 @@ var NoisyBtn = function() {
 }
 				</code>
 			</pre>
-			<p>This way we can reference it within other scope such as <code>.init</code> function. And with it, we will store the HTML element.</p>
-			<pre>
-				<code>
-var NoisyBtn = function() {
-	var self = this;
-	self.options = {
-		'text-transform': 'capitalize'
-	};
+		</section>
 
-	self.init = function(elem, options) {
-		self.elem = elem;
-		...
-	}	
-}
-				</code>
-			</pre>
-			<p>Finally, we can creat a function that takes the <code>self.elem</code> and do something with it.</p>
+		<section class="row">
+			<h2>Object Prototypes</h2>
+			<p>We've attached information to the constructor function with lines such as <code>self.options = ...</code> and <code>self.init = ...</code>. This way each instance of that object constructor will have those key value pairs when created.</p>
+			<p>There is another way to attach information to the constructor function, and that is to use the Object.prototype object. Let's look at the example below.</p>
 			<pre>
 				<code>
 var NoisyBtn = function() {
 	...
-	self.shutup = function() {
-		self.elem.off();
-	}	
+}
+
+NoisyBtn.prototype.shutup = function() {
+	this.elem.off();
+	console.log('Noisy Button is disabled now');	
 }
 				</code>
 			</pre>
-			<p>Now when we initiate our jQuery plugin, we will store it in a variable like so: <code>var noisyBtn = $('.noisyBtn').noisyBtn();</code>, so that we can use our <code>.shutup</code> function to disable the noisyBtn: <code>noisyBtn.shutup();</code></p>
+			<p>As you can see, the <code>.shutup()</code> function disables the functionalities of our noisy button object. The use of <code>this</code> (or <code>self</code> in our case) vs. <code>prototype</code> is a rather complex subject (read <a href="http://stackoverflow.com/questions/310870/use-of-prototype-vs-this-in-javascript">stackoverflow</a> for more info), but a general rule of thumb that I go by is to keep all the properties that are contextually relevant inside <code>this</code> and attach functions that manipulate those properties to <code>prototype</code>.</p>
+			<p>One of the reasonings behind this is that when you stringify a javascript object into a JSON string, it will keep the key value pairs given by <code>this</code> but discard everything <code>prototype</code>. So keep the stuff that you may wish to pass around as JSON in <code>this</code> and everything else in <code>prototype</code>.</p>
+			<p>Lastly, let's test our code. We will initiate our jQuery plugin and store it in a variable like so: <code>var noisyBtn = $('.noisyBtn').noisyBtn();</code>, so that we can use our <code>.shutup</code> function to disable the noisyBtn: <code>noisyBtn.shutup();</code></p>
 		</section>
 
 	</div>
